@@ -1,0 +1,65 @@
+{
+  "app_name": "لوحة تحكم O2 Smart",
+  "nav": {
+    "dashboard": "لوحة القيادة",
+    "categories": "الفئات",
+    "subcategories": "الفئات الفرعية",
+    "products": "المنتجات",
+    "brands": "العلامات التجارية",
+    "attributes": "الخصائص",
+    "stock": "المخزون",
+    "orders": "الطلبات",
+    "guestOrders": "طلبات الزوار",
+    "paymentLinks": "روابط الدفع",
+    "promoCodes": "أكواد الخصم",
+    "reviews": "التقييمات",
+    "cmsPages": "الصفحات الثابتة",
+    "cmsBanners": "البانرات الإعلانية",
+    "settings": "الإعدادات",
+    "roles": "الأدوار",
+    "admins": "المشرفون"
+  },
+  "login": {
+    "title": "تسجيل الدخول",
+    "subtitle": "لوحة تحكم O2 Smart",
+    "welcome": "أهلاً بعودتك!",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "submit": "تسجيل الدخول",
+    "submitting": "جاري تسجيل الدخول...",
+    "show_password": "إظهار كلمة المرور",
+    "hide_password": "إخفاء كلمة المرور",
+    "error_generic": "حدث خطأ ما. حاول مرة أخرى."
+  },
+  "common": {
+    "logout": "تسجيل الخروج",
+    "add_new": "إضافة جديد",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "saving": "جاري الحفظ...",
+    "name_en": "الاسم (إنجليزي)",
+    "name_ar": "الاسم (عربي)",
+    "slug": "الرابط المختصر",
+    "status": "الحالة",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "actions": "إجراءات",
+    "confirm_delete": "هل أنت متأكد من الحذف؟ لا يمكن التراجع عن هذا الإجراء.",
+    "loading": "جاري التحميل...",
+    "no_records": "لا توجد سجلات بعد.",
+    "error_generic": "حدث خطأ ما. حاول مرة أخرى."
+  },
+  "dashboard": {
+    "welcome": "مرحباً بعودتك",
+    "orders_today": "طلبات اليوم",
+    "revenue_today": "إيرادات اليوم",
+    "low_stock": "منتجات منخفضة المخزون",
+    "total_products": "إجمالي المنتجات"
+  },
+  "placeholder": {
+    "coming_soon": "هذه الوحدة قادمة قريباً.",
+    "back_to_dashboard": "العودة إلى لوحة القيادة"
+  }
+}

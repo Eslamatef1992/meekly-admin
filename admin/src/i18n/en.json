@@ -1,0 +1,65 @@
+{
+  "app_name": "O2 Smart Admin",
+  "nav": {
+    "dashboard": "Dashboard",
+    "categories": "Categories",
+    "subcategories": "Subcategories",
+    "products": "Products",
+    "brands": "Brands",
+    "attributes": "Attributes",
+    "stock": "Stock",
+    "orders": "Orders",
+    "guestOrders": "Guest Orders",
+    "paymentLinks": "Payment Links",
+    "promoCodes": "Promo Codes",
+    "reviews": "Reviews",
+    "cmsPages": "CMS Pages",
+    "cmsBanners": "CMS Banners",
+    "settings": "Settings",
+    "roles": "Roles",
+    "admins": "Admins"
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "O2 Smart Admin Panel",
+    "welcome": "Welcome Back!",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "error_generic": "Something went wrong. Please try again."
+  },
+  "common": {
+    "logout": "Log out",
+    "add_new": "Add New",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "name_en": "Name (English)",
+    "name_ar": "Name (Arabic)",
+    "slug": "Slug",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "actions": "Actions",
+    "confirm_delete": "Are you sure you want to delete this? This cannot be undone.",
+    "loading": "Loading...",
+    "no_records": "No records yet.",
+    "error_generic": "Something went wrong. Please try again."
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "orders_today": "Orders Today",
+    "revenue_today": "Revenue Today",
+    "low_stock": "Low Stock Items",
+    "total_products": "Total Products"
+  },
+  "placeholder": {
+    "coming_soon": "This module is coming soon.",
+    "back_to_dashboard": "Back to Dashboard"
+  }
+}
