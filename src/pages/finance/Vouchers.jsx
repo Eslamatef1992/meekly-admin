@@ -152,7 +152,7 @@ export default function Vouchers() {
             </select>
           </div>
           <div>
-            <label className="label">{isAr ? 'السنة المالية' : 'Fiscal Period'}</label>
+            <label className="label">{isAr ? 'السنة المالية' : 'Financial Period'}</label>
             <select className="input" value={filters.fiscal_period_id} onChange={e => setFilters(f => ({ ...f, fiscal_period_id: e.target.value }))}>
               <option value="">{t('common.all')}</option>
               {(fiscalPeriods || []).map(p => <option key={p.id} value={p.id}>{p.code}</option>)}
