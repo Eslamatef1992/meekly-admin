@@ -141,7 +141,7 @@ export default function FinancialUploads() {
         <div className="card-body grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Fiscal period */}
           <div className="md:col-span-1">
-            <label className="label">{isAr ? 'السنة المالية' : 'Fiscal Year'} *</label>
+            <label className="label">{isAr ? 'السنة المالية' : 'Financial Year'} *</label>
             <select
               className="input"
               value={fiscalPeriodId}
@@ -279,7 +279,7 @@ export default function FinancialUploads() {
               <tr>
                 <th>#</th>
                 <th>{isAr ? 'النوع' : 'Type'}</th>
-                <th>{isAr ? 'السنة' : 'Fiscal Year'}</th>
+                <th>{isAr ? 'السنة' : 'Financial Year'}</th>
                 <th>{isAr ? 'الملف' : 'File'}</th>
                 <th>{isAr ? 'الحالة' : 'Status'}</th>
                 <th className="text-end">{isAr ? 'المدخل' : 'Inserted'}</th>
