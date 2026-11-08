@@ -10,6 +10,7 @@ import TrialBalance from './pages/finance/TrialBalance';
 import GeneralLedger from './pages/finance/GeneralLedger';
 import IncomeStatement from './pages/finance/IncomeStatement';
 import BalanceSheet from './pages/finance/BalanceSheet';
+import FinancialUploads from './pages/finance/FinancialUploads';
 import Employees from './pages/hr/Employees';
 import EmployeeDetail from './pages/hr/EmployeeDetail';
 import SalaryComponents from './pages/hr/SalaryComponents';
@@ -61,6 +62,7 @@ export default function App() {
         <Route path="finance/general-ledger"element={<GeneralLedger />} />
         <Route path="finance/income-statement" element={<IncomeStatement />} />
         <Route path="finance/balance-sheet" element={<BalanceSheet />} />
+        <Route path="finance/uploads"       element={<FinancialUploads />} />
         <Route path="hr/employees"          element={<Employees />} />
         <Route path="hr/employees/:id"      element={<EmployeeDetail />} />
         <Route path="hr/salary-components"  element={<SalaryComponents />} />

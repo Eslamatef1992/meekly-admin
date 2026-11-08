@@ -90,6 +90,7 @@
     "general_ledger": "الأستاذ العام",
     "income_statement": "قائمة الدخل",
     "balance_sheet": "الميزانية العمومية",
+    "financial_uploads": "رفع البيانات المالية",
     "hr": "الموارد البشرية",
     "human_resources": "الموارد البشرية",
     "employees": "الموظفون",
@@ -195,6 +196,17 @@
     "search_employee": "البحث بالاسم أو رقم الموظف..."
   },
   "finance": {
+    "uploads": {
+      "title": "رفع البيانات المالية",
+      "subtitle": "ارفع ملفات الإكسل وأضفها للسنة المالية المختارة",
+      "status": {
+        "queued": "في الانتظار",
+        "processing": "قيد المعالجة",
+        "completed": "مكتمل",
+        "failed": "فشل",
+        "rolled_back": "تم التراجع"
+      }
+    },
     "account": { "code": "الكود", "name": "الاسم", "name_ar": "الاسم بالعربي", "type": "النوع", "balance": "الرصيد", "parent": "الحساب الأب", "is_group": "حساب مجموعة" },
     "voucher": {
       "no": "رقم السند",

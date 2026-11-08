@@ -90,6 +90,7 @@
     "general_ledger": "General Ledger",
     "income_statement": "Income Statement",
     "balance_sheet": "Balance Sheet",
+    "financial_uploads": "Financial Uploads",
     "hr": "Human Resources",
     "human_resources": "Human Resources",
     "employees": "Employees",
@@ -195,6 +196,17 @@
     "search_employee": "Search by name or employee number..."
   },
   "finance": {
+    "uploads": {
+      "title": "Financial Uploads",
+      "subtitle": "Upload Excel files and import them into the chosen fiscal year",
+      "status": {
+        "queued": "Queued",
+        "processing": "Processing",
+        "completed": "Completed",
+        "failed": "Failed",
+        "rolled_back": "Rolled back"
+      }
+    },
     "account": { "code": "Code", "name": "Name", "name_ar": "Arabic Name", "type": "Type", "balance": "Balance", "parent": "Parent", "is_group": "Group" },
     "voucher": {
       "no": "Voucher No",

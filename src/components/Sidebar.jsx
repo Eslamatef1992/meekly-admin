@@ -7,6 +7,7 @@ import {
   FileSignature, Calendar, Briefcase, Store, CreditCard, Shield,
   User as UserIcon, HelpCircle, LogOut, ChevronRight, ArrowRightLeft,
   ArrowUpDown, Warehouse as WarehouseIcon, Tags, Building, ChevronUp,
+  Upload,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useAuthStore } from '../lib/auth';
@@ -95,6 +96,7 @@ export default function Sidebar({ open }) {
           <NavItem to="/finance/general-ledger"    icon={FileText}>{t('nav.general_ledger')}</NavItem>
           <NavItem to="/finance/income-statement"  icon={FileText}>{t('nav.income_statement')}</NavItem>
           <NavItem to="/finance/balance-sheet"     icon={Scale}>{t('nav.balance_sheet')}</NavItem>
+          <NavItem to="/finance/uploads"           icon={Upload}>{t('nav.financial_uploads')}</NavItem>
         </Section>
 
         <Section id="hr" title={t('nav.human_resources')} hasActive={matches(['/hr'])}>
