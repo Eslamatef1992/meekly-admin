@@ -1,14 +1,13 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import {
   Upload, FileSpreadsheet, FileText, RotateCcw, Trash2, CheckCircle2,
-  AlertTriangle, Loader2, Clock, Undo2,
+  AlertTriangle, Loader2, Clock, Undo2, Building, HelpCircle, ChevronDown,
 } from 'lucide-react';
 import { api } from '../../lib/api';
 import { fmtMoney } from '../../lib/format';
-import { useAuthStore } from '../../lib/auth';
 
 const UPLOAD_TYPES = [
   { value: 'chart_of_accounts', icon: FileText,        labelEn: 'Chart of Accounts', labelAr: 'شجرة الحسابات' },
@@ -37,13 +36,14 @@ export default function FinancialUploads() {
   const { t, i18n } = useTranslation();
   const qc = useQueryClient();
   const isAr = i18n.language === 'ar';
-  const branches = useAuthStore(s => s.branches);
 
   // Form state
   const [fiscalPeriodId, setFiscalPeriodId] = useState('');
+  const [companyId, setCompanyId] = useState('');
   const [branchId, setBranchId] = useState('');
   const [uploadType, setUploadType] = useState('vouchers');
   const [file, setFile] = useState(null);
+  const [showHelp, setShowHelp] = useState(false);
   const inputRef = useRef(null);
 
   // Lookups
@@ -51,6 +51,17 @@ export default function FinancialUploads() {
     queryKey: ['fiscal-periods'],
     queryFn: () => api.get('/api/lookups/fiscal-periods').then(r => r.data),
   });
+  const { data: companies } = useQuery({
+    queryKey: ['companies'],
+    queryFn: () => api.get('/api/lookups/companies').then(r => r.data),
+  });
+  const { data: branches } = useQuery({
+    queryKey: ['branches', companyId],
+    queryFn: () => api.get('/api/lookups/branches', { params: companyId ? { company_id: companyId } : {} }).then(r => r.data),
+  });
+
+  // Reset branch when company changes (branch must belong to selected company)
+  useEffect(() => { setBranchId(''); }, [companyId]);
 
   // History — polls every 3s while any job is processing
   const { data } = useQuery({
@@ -70,7 +81,8 @@ export default function FinancialUploads() {
       fd.append('file', file);
       fd.append('fiscal_period_id', fiscalPeriodId);
       fd.append('upload_type', uploadType);
-      if (branchId) fd.append('branch_id', branchId);
+      if (companyId) fd.append('company_id', companyId);
+      if (branchId)  fd.append('branch_id',  branchId);
       const r = await api.post('/api/finance/uploads', fd, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -109,8 +121,8 @@ export default function FinancialUploads() {
   });
 
   const canSubmit = useMemo(
-    () => !!file && !!fiscalPeriodId && !!uploadType && !uploadMut.isPending,
-    [file, fiscalPeriodId, uploadType, uploadMut.isPending],
+    () => !!file && !!fiscalPeriodId && !!companyId && !!uploadType && !uploadMut.isPending,
+    [file, fiscalPeriodId, companyId, uploadType, uploadMut.isPending],
   );
 
   const fmtBytes = (b) => {
@@ -139,7 +151,27 @@ export default function FinancialUploads() {
       {/* Upload form */}
       <div className="card">
         <div className="card-body grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* Fiscal period */}
+          {/* Company */}
+          <div className="md:col-span-1">
+            <label className="label flex items-center gap-1.5">
+              <Building size={12} className="text-brand-700" />
+              {isAr ? 'الشركة' : 'Company'} *
+            </label>
+            <select
+              className="input"
+              value={companyId}
+              onChange={(e) => setCompanyId(e.target.value)}
+            >
+              <option value="">{isAr ? '-- اختر الشركة --' : '-- Select company --'}</option>
+              {(companies || []).map(c => (
+                <option key={c.id} value={c.id}>
+                  {isAr && c.name_ar ? c.name_ar : c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Financial period */}
           <div className="md:col-span-1">
             <label className="label">{isAr ? 'السنة المالية' : 'Financial Year'} *</label>
             <select
@@ -156,7 +188,7 @@ export default function FinancialUploads() {
             </select>
           </div>
 
-          {/* Branch (optional) */}
+          {/* Branch (optional) — filters by company */}
           <div className="md:col-span-1">
             <label className="label">
               {isAr ? 'الفرع (اختياري)' : 'Branch (optional)'}
@@ -165,18 +197,24 @@ export default function FinancialUploads() {
               className="input"
               value={branchId}
               onChange={(e) => setBranchId(e.target.value)}
+              disabled={!companyId}
+              title={!companyId ? (isAr ? 'اختر الشركة أولاً' : 'Select a company first') : ''}
             >
-              <option value="">{isAr ? 'الفرع الافتراضي' : 'Default branch'}</option>
+              <option value="">
+                {!companyId
+                  ? (isAr ? 'اختر الشركة أولاً' : 'Select a company first')
+                  : (isAr ? 'الفرع الافتراضي' : 'Default branch')}
+              </option>
               {(branches || []).map(b => (
-                <option key={b.id} value={b.id}>{b.name}</option>
+                <option key={b.id} value={b.id}>{isAr && b.name_ar ? b.name_ar : b.name}</option>
               ))}
             </select>
           </div>
 
-          {/* Type cards */}
-          <div className="md:col-span-2">
+          {/* Type cards — full width on second row */}
+          <div className="md:col-span-4">
             <label className="label">{isAr ? 'نوع الملف' : 'File type'} *</label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {UPLOAD_TYPES.map(opt => {
                 const Icon = opt.icon;
                 const active = uploadType === opt.value;
@@ -244,8 +282,8 @@ export default function FinancialUploads() {
             </label>
           </div>
 
-          {/* Submit */}
-          <div className="md:col-span-4">
+          {/* Submit + Help toggle */}
+          <div className="md:col-span-4 flex items-center justify-between gap-2 flex-wrap">
             <button
               className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!canSubmit}
@@ -256,9 +294,109 @@ export default function FinancialUploads() {
                 : <Upload size={16} />}
               {isAr ? 'رفع و معالجة' : 'Upload & process'}
             </button>
+            <button
+              type="button"
+              className="btn-ghost text-xs text-brand-700"
+              onClick={() => setShowHelp(v => !v)}
+            >
+              <HelpCircle size={14} />
+              {isAr ? 'ما هي صيغة الملف المقبولة؟' : 'What file format is accepted?'}
+              <ChevronDown size={12} className={`transition-transform ${showHelp ? 'rotate-180' : ''}`} />
+            </button>
           </div>
         </div>
       </div>
+
+      {/* File format guide */}
+      {showHelp && (
+        <div className="card">
+          <div className="card-body space-y-4">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <HelpCircle size={18} className="text-brand-700" />
+              {isAr ? 'صيغ الملفات المقبولة' : 'Accepted file formats'}
+            </h2>
+
+            {/* Chart of Accounts */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 font-semibold text-sm">
+                <FileText size={16} className="text-brand-700" />
+                {isAr ? 'شجرة الحسابات' : 'Chart of Accounts'}
+                <span className="badge-gray">.xls, .xlsx, .csv</span>
+              </div>
+              <p className="text-xs text-gray-600">
+                {isAr
+                  ? 'ملف إكسل يحتوي صف عناوين ثم صفوف الحسابات. الأعمدة المقبولة (أي ترتيب):'
+                  : 'An Excel sheet with a header row and one account per row. Accepted columns (in any order):'}
+              </p>
+              <div className="overflow-x-auto text-xs">
+                <table className="min-w-full border border-gray-200 rounded">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-2 py-1 border-b text-start">Column</th>
+                      <th className="px-2 py-1 border-b text-start">{isAr ? 'المعنى' : 'Meaning'}</th>
+                      <th className="px-2 py-1 border-b text-start">{isAr ? 'مثال' : 'Example'}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td className="px-2 py-1 font-mono">code</td><td className="px-2 py-1">{isAr ? 'رقم الحساب (مطلوب)' : 'Account code (required)'}</td><td className="px-2 py-1 font-mono">1101011</td></tr>
+                    <tr><td className="px-2 py-1 font-mono">name</td><td className="px-2 py-1">{isAr ? 'الاسم بالإنجليزي' : 'English name'}</td><td className="px-2 py-1">Cash on hand</td></tr>
+                    <tr><td className="px-2 py-1 font-mono">name_ar</td><td className="px-2 py-1">{isAr ? 'الاسم بالعربي' : 'Arabic name'}</td><td className="px-2 py-1 text-end">النقدية بالصندوق</td></tr>
+                    <tr><td className="px-2 py-1 font-mono">parent</td><td className="px-2 py-1">{isAr ? 'رقم الحساب الأب (اختياري)' : 'Parent account code (optional)'}</td><td className="px-2 py-1 font-mono">110101</td></tr>
+                    <tr><td className="px-2 py-1 font-mono">type</td><td className="px-2 py-1">{isAr ? 'النوع (اختياري)' : 'Type (optional)'}</td><td className="px-2 py-1">asset / liability / equity / income / expense</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-xs text-gray-500">
+                {isAr
+                  ? 'إذا لم يُحدد النوع، يُستنتج من أول رقم في الكود: 1=أصول ، 2=التزامات ، 3=حقوق ملكية ، 4=إيرادات ، 5=مصروفات.'
+                  : 'If "type" is missing, it\'s inferred from the first digit of the code (1=asset, 2=liability, 3=equity, 4=income, 5=expense).'}
+              </p>
+            </div>
+
+            <hr className="border-gray-200" />
+
+            {/* Vouchers */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 font-semibold text-sm">
+                <FileSpreadsheet size={16} className="text-brand-700" />
+                {isAr ? 'السندات' : 'Vouchers'}
+                <span className="badge-gray">.xls, .xlsx, .csv</span>
+              </div>
+              <p className="text-xs text-gray-600">
+                {isAr
+                  ? 'يقبل ملف السندات بصيغة ميكي الأصلية (تخطيط أعمدة ثابت). كل صف = سطر محاسبي، والسطور ذات نفس رقم السند تُجمع في سند واحد.'
+                  : 'Accepts the native Mekky voucher Excel (fixed-column layout). Each row is one accounting line; rows sharing the same voucher number are grouped into one voucher.'}
+              </p>
+              <div className="overflow-x-auto text-xs">
+                <table className="min-w-full border border-gray-200 rounded">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-2 py-1 border-b text-start">{isAr ? 'العمود' : 'Column'}</th>
+                      <th className="px-2 py-1 border-b text-start">{isAr ? 'المحتوى' : 'Content'}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td className="px-2 py-1 font-mono">D (col 4)</td><td className="px-2 py-1">{isAr ? 'المبلغ الدائن' : 'Credit amount'}</td></tr>
+                    <tr><td className="px-2 py-1 font-mono">G (col 7)</td><td className="px-2 py-1">{isAr ? 'المبلغ المدين' : 'Debit amount'}</td></tr>
+                    <tr><td className="px-2 py-1 font-mono">L (col 12)</td><td className="px-2 py-1">{isAr ? 'البيان (عربي)' : 'Narration (Arabic)'}</td></tr>
+                    <tr><td className="px-2 py-1 font-mono">N (col 14)</td><td className="px-2 py-1">{isAr ? 'رقم السند' : 'Voucher number'}</td></tr>
+                    <tr><td className="px-2 py-1 font-mono">T (col 20)</td><td className="px-2 py-1">{isAr ? 'اسم الحساب (للعرض)' : 'Account name (label only)'}</td></tr>
+                    <tr><td className="px-2 py-1 font-mono">Z (col 26)</td><td className="px-2 py-1">{isAr ? 'رقم الحساب — يجب أن يطابق شجرة الحسابات' : 'Account code — must match Chart of Accounts'}</td></tr>
+                    <tr><td className="px-2 py-1 font-mono">AC (col 29)</td><td className="px-2 py-1">{isAr ? 'تاريخ السند (مثال: 31/12/2020)' : 'Voucher date (e.g. 31/12/2020)'}</td></tr>
+                    <tr><td className="px-2 py-1 font-mono">AE (col 31)</td><td className="px-2 py-1">{isAr ? 'نوع السند (قيد / قبض / دفع / بيع / شراء)' : 'Voucher type label (قيد/قبض/دفع/بيع/شراء)'}</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900">
+                <strong>{isAr ? 'ملاحظة مهمة:' : 'Important:'}</strong>{' '}
+                {isAr
+                  ? 'يجب رفع "شجرة الحسابات" قبل السندات لتلك السنة المالية، وإلا ستفشل السندات لأن أرقام الحسابات لن تكون موجودة.'
+                  : 'Upload the Chart of Accounts for the financial year BEFORE uploading vouchers, otherwise the voucher import will fail because the account codes won\'t exist yet.'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* History */}
       <div className="card">
